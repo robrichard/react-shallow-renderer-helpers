@@ -1,5 +1,9 @@
 "use strict";
 
+var React = require('react/addons');
+var ReactContext = require('react/lib/ReactContext');
+var TestUtils = React.addons.TestUtils;
+
 var filterComponent = function (component, predicate) {
         var i;
         var results = [];
@@ -19,6 +23,15 @@ var filterComponent = function (component, predicate) {
 };
 
 var shallowHelpers = module.exports = {
+    renderWithContext: function (makeComponent, context) {
+        // taken from https://github.com/facebook/react/issues/3721#issuecomment-106318499
+        context = context || {};
+        ReactContext.current = context;
+        var shallowRenderer = TestUtils.createRenderer();
+        shallowRenderer.render(makeComponent(), context);
+        ReactContext.current = {};
+        return shallowRenderer.getRenderOutput();
+    },
     filter: filterComponent,
     find: function () {
         return filterComponent.apply(this, arguments)[0];
@@ -29,7 +42,6 @@ var shallowHelpers = module.exports = {
         return classArr.indexOf(className) !== -1;
     },
     isType: function (component, type) {
-        console.log(component.type, type);
         return component.type === type;
     },
     findType: function (component, type) {

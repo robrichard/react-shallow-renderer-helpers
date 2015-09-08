@@ -88,3 +88,17 @@ shallowHelpers.findType(component, 'test');
 // returns
 <div className="test">Test</div>
 ```
+
+### renderWithContext
+Workaround for shallow rendering components with context.
+see https://github.com/facebook/react/issues/3721#issuecomment-106318499
+
+```javascript
+var output = shallowHelpers.renderWithContext(() =>
+  <MyComponent
+    with={props}
+    and={stuff}
+  />,
+  { here: 'is', my: 'context'}
+);
+```
