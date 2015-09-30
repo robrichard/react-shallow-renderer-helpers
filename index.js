@@ -4,6 +4,48 @@ var React = require('react/addons');
 var ReactContext = require('react/lib/ReactContext');
 var TestUtils = React.addons.TestUtils;
 
+
+/**
+ * Wrapper class for React's TestUtils ShallowRenderer to overcome some of its limitations.
+ */
+function ShallowRenderer() {
+    this._renderer = TestUtils.createRenderer();
+}
+
+ShallowRenderer.prototype.getRenderOutput = function getRenderOutput() {
+    return this._renderer.getRenderOutput();
+};
+
+/**
+ * Get the component instance used by the renderer.
+ */
+ShallowRenderer.prototype.getMountedInstance = function getMountedInstance() {
+    // Hack to get component instance: https://github.com/facebook/react/pull/4918
+    return this._renderer._instance ? this._renderer._instance._instance : null;
+};
+
+/**
+ * Render the component with context.
+ */
+ShallowRenderer.prototype.render = function render(createElement, context) {
+    if (!createElement) {
+        throw new Error('Must pass `createElement` function to `ShallowRenderer#render`');
+    }
+
+    context = context || {};
+    // Context workaround: https://github.com/facebook/react/issues/3721#issuecomment-106318499
+    ReactContext.current = context;
+    this._renderer.render(createElement(), context);
+    ReactContext.current = {};
+
+    return this;
+};
+
+ShallowRenderer.prototype.unmount = function unmount() {
+    this._renderer.unmount();
+};
+
+
 var filterComponent = function (component, predicate) {
         var i;
         var results = [];
@@ -23,13 +65,12 @@ var filterComponent = function (component, predicate) {
 };
 
 var shallowHelpers = module.exports = {
+    createRenderer: function () {
+        return new ShallowRenderer();
+    },
     renderWithContext: function (makeComponent, context) {
-        // taken from https://github.com/facebook/react/issues/3721#issuecomment-106318499
-        context = context || {};
-        ReactContext.current = context;
-        var shallowRenderer = TestUtils.createRenderer();
-        shallowRenderer.render(makeComponent(), context);
-        ReactContext.current = {};
+        var shallowRenderer = shallowHelpers.createRenderer();
+        shallowRenderer.render(makeComponent, context);
         return shallowRenderer.getRenderOutput();
     },
     filter: filterComponent,
