@@ -83,15 +83,34 @@ shallowHelpers.filterClass(component, 'test');
 ### findClass(component, className)
 Recursively searches `component`, returning the first child that has a className of `className`.
 ```
-shallowHelpers.findType(component, 'test');
+shallowHelpers.findClass(component, 'test');
 
 // returns
 <div className="test">Test</div>
 ```
 
+### createRenderer
+Returns a wrapper around React's shallow renderer that renders with the given context. Also exposes a `getMountedInstance`
+method that returns the rendered component instance. This allows for testing state and calling methods directly on the
+instance. See https://github.com/facebook/react/issues/3721#issuecomment-106318499 and https://github.com/facebook/react/pull/4918
+
+```javascript
+var renderer = shallowHelpers.createRenderer();
+renderer.render(() =>
+  <MyComponent
+    with={props}
+    and={stuff}
+  />,
+  {here: 'is', my: 'context'}
+);
+
+var instance = renderer.getMountedInstance();
+var testState = instance.state.test;
+```
+
 ### renderWithContext
-Workaround for shallow rendering components with context.
-see https://github.com/facebook/react/issues/3721#issuecomment-106318499
+Shorthand method for rendering with context without needing to explicitly create a renderer. Useful if you never need
+to access the component instance.
 
 ```javascript
 var output = shallowHelpers.renderWithContext(() =>
@@ -99,6 +118,6 @@ var output = shallowHelpers.renderWithContext(() =>
     with={props}
     and={stuff}
   />,
-  { here: 'is', my: 'context'}
+  {here: 'is', my: 'context'}
 );
 ```
