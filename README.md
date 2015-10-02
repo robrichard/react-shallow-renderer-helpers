@@ -121,3 +121,13 @@ var output = shallowHelpers.renderWithContext(() =>
   {here: 'is', my: 'context'}
 );
 ```
+
+### renderFactory
+Returns a method for rendering with context the component passed as a parameter. Useful for testing if
+you need a helper method for rendering your component before multiple unit tests.
+
+```javascript
+var Component = React.createClass({});
+var renderMethod = shallowHelpers.renderFactory(Component);
+var renderedComponent = renderMethod(props, context);
+```
