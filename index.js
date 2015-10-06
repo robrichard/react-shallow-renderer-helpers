@@ -73,6 +73,13 @@ var shallowHelpers = module.exports = {
         shallowRenderer.render(makeComponent, context);
         return shallowRenderer.getRenderOutput();
     },
+    renderFactory: function(makeComponent) {
+        return function(props, context) {
+            return shallowHelpers.renderWithContext(function () {
+                return React.createElement(makeComponent, props);
+            }, context);
+        }
+    },
     filter: filterComponent,
     find: function () {
         return filterComponent.apply(this, arguments)[0];
