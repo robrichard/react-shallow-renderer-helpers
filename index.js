@@ -1,9 +1,7 @@
 "use strict";
 
-var React = require('react/addons');
-var ReactContext = require('react/lib/ReactContext');
-var TestUtils = React.addons.TestUtils;
-
+var React      = require('react');
+var TestUtils  = require('react-addons-test-utils');
 
 /**
  * Wrapper class for React's TestUtils ShallowRenderer to overcome some of its limitations.
@@ -33,10 +31,7 @@ ShallowRenderer.prototype.render = function render(createElement, context) {
     }
 
     context = context || {};
-    // Context workaround: https://github.com/facebook/react/issues/3721#issuecomment-106318499
-    ReactContext.current = context;
     this._renderer.render(createElement(), context);
-    ReactContext.current = {};
 
     return this;
 };
