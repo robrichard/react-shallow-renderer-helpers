@@ -85,7 +85,7 @@ var shallowHelpers = module.exports = {
         return classArr.indexOf(className) !== -1;
     },
     isType: function (component, type) {
-        return component.type === type;
+        return component && component.type === type;
     },
     findType: function (component, type) {
         return shallowHelpers.find(component, function (c) {
