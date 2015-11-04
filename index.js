@@ -43,7 +43,9 @@ ShallowRenderer.prototype.unmount = function unmount() {
 
 var filterComponent = function (component, predicate) {
         var i;
+        var j;
         var results = [];
+        
         if (predicate(component)) {
             results.push(component);
         }
@@ -54,6 +56,10 @@ var filterComponent = function (component, predicate) {
             }
         } else if (component && component.props && component.props.children) {
             results = results.concat(filterComponent(component.props.children, predicate));
+        } else if (Array.isArray(component)) {
+            for (j = 0; j < component.length; j++) {
+                results = results.concat(filterComponent(component[j], predicate));
+            }
         }
 
         return results;
