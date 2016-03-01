@@ -1,3 +1,6 @@
+## Deprecated
+Use [enzyme](https://www.npmjs.com/package/enzyme) instead
+
 # react-shallow-renderer-helpers
 Helpers for testing with React's shallow renderer
 
